@@ -1,0 +1,16 @@
+{
+  "name": "trsutry-oracle",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "compile": "yarn tsc",
+    "dev": "yarn tsc && node dist/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
+}
