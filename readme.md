@@ -1,6 +1,6 @@
 # Trustory
 
-Trustory is a proof-of-concept for using blockchain to store, verify, and maintain accurate records of personal achievements, experience, and education - similar to to a resume, but cryptographically verifiable and totally automated. The main idea behind trustory is to improve the trust between students and employers when it comes to what they actually know
+Trustory is a proof-of-concept for using blockchain to store, verify, and maintain accurate records of personal achievements, experience, and education - similar to to a resume, but cryptographically verifiable and totally automated. It was developed for [CMU's Developing Blockchain Use Cases](https://www.andrew.cmu.edu/user/azj/cmucoin/) course. The main idea behind trustory is to improve the trust between students and employers when it comes to what they actually know
 
 This demo dapp is written to run on the ethereum blockchain. In a real-world implementation, however, we'd most likely build it as an application-specific blockchain, as that would give us more opportunity to create economic value from the service through it's native token.
 
@@ -16,4 +16,4 @@ This proof of concept consists of two parts:
    2. [web3js](https://github.com/ethereum/web3.js/) for interacting with the smart contracts from the UI
    3. [reactjs](https://reactjs.org/) for the frontend UI 
 
-All of the code for the oracle is in `oracle/`, including the oracle contract interface. All of the code for the truffle dapp, including the main contracts and the react UI is in `dapp`
+All of the code for the oracle is in `oracle/`, including the oracle contract interface. All of the code for the truffle dapp, including the main contracts and UI is in `dapp`
