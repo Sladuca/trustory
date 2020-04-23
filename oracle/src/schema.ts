@@ -19,21 +19,21 @@ export default gql`
   }
 
   input CourseInput {
-    id: String! # id specific to PI (i.e. course number if it's CMU)
+    id: int! # id specific to PI (i.e. course number if it's CMU)
     name: String!
     instructor: String!
     info: String # IPFS hash or URL
   }
 
   input CourseUpdate {
-    id: String # id specific to PI (i.e. course number if it's CMU)
+    id: Int # id specific to PI (i.e. course number if it's CMU)
     name: String
     instructor: String
     info: String # IPFS hash or URL
   }
 
   type Course {
-    id: String! # id specific to PI (i.e. course number if it's CMU)
+    id: Int! # id specific to PI (i.e. course number if it's CMU)
     nftId: String! # oracle contract NFT variety ID
     name: String!
     instructor: String!
