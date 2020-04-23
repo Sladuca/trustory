@@ -1,4 +1,7 @@
 dapp/node_modules
 dapp/client/node_modules
+dapp/yarn-error.log
+dapp/client/yarn-error.log
 oracle/node_modules
 oracle/dist
+oracle/yarn-error.log
