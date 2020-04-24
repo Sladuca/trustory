@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "compile": "truffle compile"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.0.0"
+  },
+  "devDependencies": {
+    "truffle": "^5.1.23"
+  }
+}
