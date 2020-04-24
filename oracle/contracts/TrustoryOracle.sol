@@ -5,8 +5,16 @@ contract TrustoryOracle {
   address public oracleAddress;
   address public trustoryContractAddress;
 
+  struct Multihash {
+    bytes32 hash;
+    uint8 hash_function;
+    uint8 size;
+  }
+
+  mapping(uint256 => Multihash) courses;
+
   modifier onlyOracle {
-    require(msg.sender == oracleAddress, "only oracle is allowed to perform this action");
+    require(address(msg.sender) == oracleAddress, "only oracle is allowed to perform this action");
     _;
   }
 
@@ -15,11 +23,12 @@ contract TrustoryOracle {
     trustoryContractAddress = _trustoryContractAddress;
   }
 
-  function createCourse (uint internalId, string ipfsDataHash) public onlyOracle {
-    // call main contract
+  function createCourse (uint256 id, uint8 hashFn, uint8 size, bytes32 URI) public onlyOracle {
+    Multihash memory courseInfo = Multihash(URI, hashFn, size);
+    courses[id] = courseInfo;
   }
 
-  function issueCert (uint internalId, address recipient) public onlyOracle {
+  function issueCert (uint256 id, address recipient) public onlyOracle {
     // call main contract
   }
 }
