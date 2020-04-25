@@ -1,21 +1,21 @@
-import IPFS from 'ipfs-http-client'
+import IPFS from 'ipfs-http-client';
 
-let node
+let node;
 
 export const initIpfs = async () => {
-  node = await IPFS.create()
-}
+  node = await IPFS.create();
+};
 
 export const upload = async (data) => {
   if (!node) {
-    throw new Error('IPFS node not initialized!')
+    throw new Error('IPFS node not initialized!');
   }
-  const files = await node.add(data)
-  return files[0].hash
-}
+  const files = await node.add(data);
+  return files[0].hash;
+};
 
 export const download = async (uri) => {
-  const data = await node.cat(uri)
-  return data.toString()
-}
+  const data = await node.cat(uri);
+  return data.toString();
+};
 
