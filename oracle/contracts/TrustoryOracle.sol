@@ -1,9 +1,36 @@
 pragma solidity ^0.6.0;
 
+contract Trustory {
+
+  event RequestViewCert(address indexed requestor, address indexed holder, uint256 id, bytes pub);
+  // URI is the hash of the private cert file that the user re-encrypted with requestor's public key
+  event ApproveViewCert(address indexed requestor, address indexed holder, uint256 id, bytes32 approvalHash);
+
+  event IssueCert(address indexed holder, address indexed institution);
+
+  modifier onlyOwner() {}
+
+  modifier onlyCertHolder(uint256 id) {}
+
+  modifier onlyInstitution() {}
+
+  function issueCert (
+    address recipient,
+    string memory pubDataURI,
+    uint8 privHashFn,
+    uint8 privSize,
+    bytes32 privURI) public onlyInstitution() returns (uint256) {}
+
+  function requestViewCert (address holder, bytes memory pub, uint256 id) public {}
+
+  function approveViewCert (address requestor, uint256 id, uint8 hashFn, uint8 size, bytes32 URI) public onlyCertHolder(id) {}
+
+}
+
 contract TrustoryOracle {
 
   address public oracleAddress;
-  address public trustoryContractAddress;
+  Trustory trustory;
 
   struct Multihash {
     bytes32 hash;
@@ -20,7 +47,7 @@ contract TrustoryOracle {
 
   constructor (address _oracleAddress, address _trustoryContractAddress) public {
     oracleAddress = _oracleAddress;
-    trustoryContractAddress = _trustoryContractAddress;
+    trustory = Trustory(_trustoryContractAddress);
   }
 
   function createCourse (uint256 id, uint8 hashFn, uint8 size, bytes32 URI) public onlyOracle {
@@ -28,7 +55,13 @@ contract TrustoryOracle {
     courses[id] = courseInfo;
   }
 
-  function issueCert (uint256 id, address recipient) public onlyOracle {
-    // call main contract
-  }
+  function issueCert (
+    address recipient,
+    string memory pubDataURI,
+    uint8 privHashFn,
+    uint8 privSize,
+    bytes32 privURI) public onlyOracle returns(uint256) {
+      uint256 id = trustory.issueCert(recipient, pubDataURI, privHashFn, privSize, privURI);
+      return id;
+    }
 }
