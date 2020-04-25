@@ -8,6 +8,8 @@ contract certificate is ERC721 {
 
   Counters.Counter private _tokenIds;
 
+  address public owner;
+
   struct Multihash {
     bytes32 hash;
     uint8 hash_function;
@@ -23,6 +25,11 @@ contract certificate is ERC721 {
   event ApproveViewCert(address indexed requestor, address indexed holder, uint256 id, bytes32 approvalHash);
 
   constructor () ERC721 ("Certificate", "CRT") public {
+  }
+
+  modifier onlyOwner() {
+    require(owner == address(msg.sender), "only trustory contract owner is allowed to perform this action");
+    _;
   }
 
   modifier onlyCertHolder(uint256 id) {
