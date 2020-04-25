@@ -3,7 +3,7 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract certificate is ERC721 {
+contract Trustory is ERC721 {
   using Counters for Counters.Counter;
 
   Counters.Counter private _tokenIds;
@@ -19,6 +19,8 @@ contract certificate is ERC721 {
   mapping (uint256 => Multihash) private privMetadatas;
 
   mapping (bytes32 => Multihash) private approvals;
+
+  mapping (address => bool) public institutions;
 
   event RequestViewCert(address indexed requestor, address indexed holder, uint256 id, bytes pub);
   // URI is the hash of the private cert file that the user re-encrypted with requestor's public key
@@ -37,7 +39,17 @@ contract certificate is ERC721 {
     _;
   }
 
-  function issueCert (address recipient, string memory pubDataURI, uint8 privHashFn, uint8 privSize, bytes32 privURI) public returns (uint256) {
+  modifier onlyInstitution() {
+    require(institutions[address(msg.sender)], "only verified institution is allowed to perform this action");
+    _;
+  }
+
+  function issueCert (
+    address recipient,
+    string memory pubDataURI,
+    uint8 privHashFn,
+    uint8 privSize,
+    bytes32 privURI) public onlyInstitution() returns (uint256) {
     _tokenIds.increment();
 
     uint256 newCertId = _tokenIds.current();
@@ -56,7 +68,7 @@ contract certificate is ERC721 {
     emit RequestViewCert(address(msg.sender), holder, id, pub);
   }
 
-  function approveViewCert (address requestor, uint256 id, uint8 hashFn, uint8 size, bytes32 URI) onlyCertHolder(id) public {
+  function approveViewCert (address requestor, uint256 id, uint8 hashFn, uint8 size, bytes32 URI) public onlyCertHolder(id) {
     Multihash memory dataToView = Multihash(URI, hashFn, size);
     bytes32 approvalHash = keccak256(abi.encodePacked(requestor, id, URI));
     approvals[approvalHash] = dataToView;
