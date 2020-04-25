@@ -8,8 +8,8 @@ export default gql`
 
   type Mutation {
     createCourse(course: CourseInput!): Course
-    updateCourse(course: CourseUpdate!): Course
-    issueCert(courseId: String!, recipient: String!, recipientKey: String!): Cert
+    createStudent(name: String!, address: String!, pub: String!): Student
+    issueCert(courseId: String!, studentId: String!): Cert
   }
 
   type Institution {
@@ -25,15 +25,9 @@ export default gql`
     info: String # IPFS hash
   }
 
-  input CourseUpdate {
-    id: String # id specific to PI (i.e. course number if it's CMU)
-    name: String
-    instructor: String
-    info: String # IPFS hash
-  }
-
   type Course {
-    id: String! # id specific to PI (i.e. course number if it's CMU)
+    id: ID!
+    courseId: String! # id specific to PI (i.e. course number if it's CMU)
     certs: [Cert!]!
     name: String!
     instructor: String!
@@ -41,7 +35,7 @@ export default gql`
   }
 
   type Cert {
-    id: String! # oracle contract NFT id
+    nftId: String! # oracle contract NFT id
     course: Course!
     holder: String! # student's ethereum address
   }
@@ -49,6 +43,6 @@ export default gql`
   type Student {
     name: String!
     address: String! # student's ethereum address
-    pub: String! # student's public key
+    pub: String! # student's compressed public key
   }
 `;

@@ -4,12 +4,23 @@ import resolvers from './resolvers';
 import * as ethereum from './ethereum';
 import * as ipfs from './ipfs';
 
+import { PrismaClient } from '@prisma/client';
+
+export interface Context {
+  prisma: PrismaClient;
+  ethereum: any;
+  ipfs: any;
+}
+
+const prisma = new PrismaClient();
+
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req }) => {
     return {
+      prisma,
       ethereum,
       ipfs
     }
