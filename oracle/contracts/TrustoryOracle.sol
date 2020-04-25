@@ -8,22 +8,16 @@ contract Trustory {
 
   event IssueCert(address indexed holder, address indexed institution);
 
-  modifier onlyOwner() {}
-
-  modifier onlyCertHolder(uint256 id) {}
-
-  modifier onlyInstitution() {}
-
   function issueCert (
     address recipient,
     string memory pubDataURI,
     uint8 privHashFn,
     uint8 privSize,
-    bytes32 privURI) public onlyInstitution() returns (uint256) {}
+    bytes32 privURI) public returns (uint256) {}
 
   function requestViewCert (address holder, bytes memory pub, uint256 id) public {}
 
-  function approveViewCert (address requestor, uint256 id, uint8 hashFn, uint8 size, bytes32 URI) public onlyCertHolder(id) {}
+  function approveViewCert (address requestor, uint256 id, uint8 hashFn, uint8 size, bytes32 URI) public {}
 
 }
 
