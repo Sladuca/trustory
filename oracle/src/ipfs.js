@@ -15,6 +15,9 @@ export const upload = async (data) => {
 };
 
 export const download = async (uri) => {
+  if (!node) {
+    throw new Error('IPFS node not initialized!');
+  }
   const data = await node.cat(uri);
   return data.toString();
 };

@@ -26,6 +26,7 @@ export default {
   },
   Mutation: {
     createCourse: (obj: any, { course }: CreateCourseArgs, context: any) => {
+      
       return "unimplemented";
     },
     updateCourse: (obj: any, { course }: UpdateCourseArgs, context: any) => {

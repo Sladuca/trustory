@@ -1,18 +1,23 @@
 import { ApolloServer } from 'apollo-server';
 import typeDefs from './schema';
 import resolvers from './resolvers';
-import { createCourse, issueCert } from './ethereum';
-import { upload, download } from './ipfs';
+import * as ethereum from './ethereum';
+import * as ipfs from './ipfs';
 
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    
+  context: ({ req }) => {
+    return {
+      ethereum,
+      ipfs
+    }
   }
 });
 
-server.listen().then(({ url }) => {
+ipfs.initIpfs().then(() => {
+  return server.listen()
+}).then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
 });

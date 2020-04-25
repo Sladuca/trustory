@@ -22,14 +22,14 @@ export default gql`
     id: String! # id specific to PI (i.e. course number if it's CMU)
     name: String!
     instructor: String!
-    info: String # IPFS hash or URL
+    info: String # IPFS hash
   }
 
   input CourseUpdate {
     id: String # id specific to PI (i.e. course number if it's CMU)
     name: String
     instructor: String
-    info: String # IPFS hash or URL
+    info: String # IPFS hash
   }
 
   type Course {
@@ -37,12 +37,18 @@ export default gql`
     certs: [Cert!]!
     name: String!
     instructor: String!
-    info: String # IPFS hash or URL
+    info: String # IPFS hash
   }
 
   type Cert {
     id: String! # oracle contract NFT id
     course: Course!
     holder: String! # student's ethereum address
+  }
+
+  type Student {
+    name: String!
+    address: String! # student's ethereum address
+    pub: String! # student's public key
   }
 `;

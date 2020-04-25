@@ -1,0 +1,39 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Instituiton {
+  id String @id
+  name String
+  oracle String @unique
+}
+
+model Course {
+  id String @default(cuid()) @id
+  courseId String
+  name String
+  instructor String
+  info String? // IPFS hash
+}
+
+model Student {
+  id String @default(cuid()) @id
+  name String 
+  address String
+  pub String
+}
+
+model Cert {
+  id String @default(cuid()) @id
+  nftId String @unique
+  course Course @relation(fields: [courseId], references: [id])
+  courseId String
+  holder Student @relation(fields: [studentId], references: [id])
+  studentId String
+}
+
