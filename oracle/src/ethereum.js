@@ -18,7 +18,7 @@ const contract = web3.eth.contract(abi).at(address);
 const account = async () => {
   try {
     const accounts = await web3.eth.getAccounts;
-    return accounts[0];
+    return accounts[9];
   } catch (err) {
     throw new Error('failed get ethereum account!');
   }
