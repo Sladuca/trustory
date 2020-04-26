@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import * as fs from 'fs';
 
 dotenv.config();
 
@@ -10,7 +11,7 @@ if (!process.env.MNEMONIC || !process.env.WEB3_PROVIDER_ADDRESS || !process.env.
   throw new Error('Mnmemonic, web3 provider, contract address, and abi required!');
 }
 const web3 = new Web3(new HDWalletProvider(process.env.MNEMONIC, process.env.WEB3_PROVIDER_ADDRESS));
-const abi = JSON.parse(process.env.ABI);
+const abi = JSON.parse(fs.readFileSync(process.env.ABI));
 const address = process.env.CONTRACT_ADDRESS;
 const contract = web3.eth.contract(abi).at(address);
 

@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "update-prisma": "sh prisma.sh",
+    "deploy-contract": "truffle deploy",
     "reset-pg": "sh postgres.sh",
     "compile": "yarn tsc && truffle compile",
     "dev": "yarn tsc && node dist/index.js"
