@@ -18,7 +18,7 @@ const prisma = new PrismaClient();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => {
+  context: () => {
     return {
       prisma,
       ethereum,
