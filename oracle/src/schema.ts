@@ -4,6 +4,7 @@ export default gql`
 
   type Query {
     getCourse(id: String!): Course
+    getStudent(name: String!): Student
   }
 
   type Mutation {
@@ -19,7 +20,7 @@ export default gql`
   }
 
   input CourseInput {
-    id: String! # id specific to PI (i.e. course number if it's CMU)
+    id: Int! # id specific to PI (i.e. course number if it's CMU)
     name: String!
     instructor: String!
     info: String # IPFS hash
@@ -27,7 +28,7 @@ export default gql`
 
   type Course {
     id: ID!
-    courseId: String! # id specific to PI (i.e. course number if it's CMU)
+    courseId: Int! # id specific to PI (i.e. course number if it's CMU)
     certs: [Cert!]!
     name: String!
     instructor: String!
@@ -35,12 +36,14 @@ export default gql`
   }
 
   type Cert {
-    nftId: String! # oracle contract NFT id
+    id: ID!
     course: Course!
-    holder: String! # student's ethereum address
+    holder: Student! # student's ethereum address
+    info: String! # IPFS Hash of encrypted data
   }
 
   type Student {
+    id: String!
     name: String!
     address: String! # student's ethereum address
     pub: String! # student's compressed public key

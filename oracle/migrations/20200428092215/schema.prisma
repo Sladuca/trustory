@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -30,6 +30,7 @@ model Student {
 
 model Cert {
   id String @default(cuid()) @id
+  nftId String @unique
   info String
   course Course @relation(fields: [courseId], references: [id])
   courseId String

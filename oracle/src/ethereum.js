@@ -11,14 +11,14 @@ if (!process.env.MNEMONIC || !process.env.WEB3_PROVIDER_ADDRESS || !process.env.
   throw new Error('Mnmemonic, web3 provider, contract address, and abi required!');
 }
 const web3 = new Web3(new HDWalletProvider(process.env.MNEMONIC, process.env.WEB3_PROVIDER_ADDRESS));
-const abi = JSON.parse(fs.readFileSync(process.env.ABI));
+const abi = JSON.parse(fs.readFileSync(process.env.ABI, 'utf8').toString());
 const address = process.env.CONTRACT_ADDRESS;
-const contract = web3.eth.contract(abi).at(address);
+const contract = new web3.eth.Contract(abi, address);
 
 const account = async () => {
   try {
-    const accounts = await web3.eth.getAccounts;
-    return accounts[9];
+    const accounts = await web3.eth.getAccounts();
+    return accounts[0];
   } catch (err) {
     throw new Error('failed get ethereum account!');
   }
@@ -30,9 +30,9 @@ const account = async () => {
 const ipfs2multihash = (hash) => {
   let mh = multihashes.fromB58String(Buffer.from(hash));
   return {
-    hashFunction: '0x' + mh.slice(0, 2).toString('hex'),
+    hashFunction: '0x' + mh.slice(0, 1).toString('hex'),
+    size: '0x' + mh.slice(1, 2).toString('hex'),
     digest: '0x' + mh.slice(2).toString('hex'),
-    size: mh.length - 2
   };
 },
 
@@ -40,24 +40,20 @@ const ipfs2multihash = (hash) => {
 
 export const createCourse = async (id, uri) => {
   const { hashFunction, digest, size } = ipfs2multihash(uri);
-  try {
-    await contract.createCourse(id, hashFunction, size, digest, {
-      from: await account()
-    })
-    return true;
-  } catch (err) {
-    console.error(err.message);
-    return false;
-  }
+  const oracle = await account();
+  await contract.methods.createCourse(id, hashFunction, size, digest).send({
+      from: oracle
+    });
+  return true;
 };
 
 export const issueCert = async (recipient, courseUri, uri) => {
   const { hashFunction, digest, size } = ipfs2multihash(uri);
-  try {
-    const id = await contract.issueCert(recipient, courseUri, hashFunction, size, digest);
-    return id;
-  } catch (err) {
-    console.error(err.message)
-    return null;
-  }
+  const oracle = await account();
+  // console.log(recipient, courseUri, hashFunction, size, digest)
+  const id = await contract.methods.issueCert(recipient, courseUri, hashFunction, size, digest).send({
+    from: oracle
+  });
+  // console.log(id);
+  return true;
 };

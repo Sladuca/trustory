@@ -27,6 +27,7 @@ contract Trustory is ERC721 {
   event ApproveViewCert(address indexed requestor, address indexed holder, uint256 id, bytes32 approvalHash);
 
   constructor () ERC721 ("Certificate", "CRT") public {
+    owner = msg.sender;
   }
 
   modifier onlyOwner() {
@@ -44,12 +45,16 @@ contract Trustory is ERC721 {
     _;
   }
 
+  function registerInstitution(address addr) public onlyOwner {
+    institutions[addr] = true;
+  }
+
   function issueCert (
     address recipient,
     string memory pubDataURI,
     uint8 privHashFn,
     uint8 privSize,
-    bytes32 privURI) public onlyInstitution() returns (uint256) {
+    bytes32 privURI) public onlyInstitution returns (uint256) {
     _tokenIds.increment();
 
     uint256 newCertId = _tokenIds.current();
@@ -62,9 +67,9 @@ contract Trustory is ERC721 {
   }
 
   function requestViewCert (address holder, bytes memory pub, uint256 id) public {
-    // check to make sure key correctly corresponds to user
-    address addrFromKey = address(bytes20(keccak256(pub))); // cast to bytes20 first since address is 20 bytes long
-    require(addrFromKey == address(msg.sender), "public key and msg.sender must be consistent!");
+    // in a real world, would check to make sure key correctly corresponds to user something like this
+    // address addrFromKey = address(bytes20(keccak256(pub))); // cast to bytes20 first since address is 20 bytes long
+    // require(addrFromKey == address(msg.sender), "public key and msg.sender must be consistent!");
     emit RequestViewCert(address(msg.sender), holder, id, pub);
   }
 

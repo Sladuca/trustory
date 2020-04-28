@@ -8,6 +8,8 @@ contract Trustory {
 
   event IssueCert(address indexed holder, address indexed institution);
 
+  function registerInstitution(address addr) public {}
+
   function issueCert (
     address recipient,
     string memory pubDataURI,

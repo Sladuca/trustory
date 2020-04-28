@@ -2,8 +2,12 @@ import { Context } from './index';
 import { prismaVersion } from '@prisma/client';
 import * as crypto from 'eth-crypto';
 
-interface getCourseArgs {
+interface GetCourseArgs {
   id: string;
+}
+
+interface GetStudentArgs {
+  name: string;
 }
 
 interface CreateCourseArgs {
@@ -23,10 +27,30 @@ interface issueCertArgs {
 
 export default {
   Query: {
-    getCourse: (obj: any, { id }: getCourseArgs, { prisma }: Context) => {
+    getCourse: (obj: any, { id }: GetCourseArgs, { prisma }: Context) => {
       return prisma.course.findOne({
         where: { id }
       })
+    },
+    getStudent: async (obj: any, { name }: GetStudentArgs, { prisma }: Context) => {
+      const students = await prisma.student.findMany({ where: { name }});
+      return students[0];
+    }
+  },
+  Course: {
+    certs: (obj: any, {}, { prisma }: Context) => prisma.cert.findMany({
+      where: {
+        courseId: obj.id
+      }
+    })
+  },
+  Cert: {
+    holder: async (obj: any, {}, { prisma }: Context) => {
+      const cert = await prisma.cert.findOne({ where: { id: obj.id }});
+      if (!cert) {
+        throw new Error('student-holder not linked!');
+      }
+      return prisma.student.findOne({ where: { id: cert.studentId }});
     }
   },
   Mutation: {
@@ -53,6 +77,15 @@ export default {
         return null;
       }
     },
+    createStudent: (obj: any, { name, address, pub }: CreateStudentArgs, { prisma }: Context) => {
+      return prisma.student.create({
+        data: {
+          name,
+          address,
+          pub
+        }
+      })
+    },
     issueCert: async (obj: any, { courseId, studentId }: issueCertArgs, { prisma, ipfs, ethereum }: Context) => {
       const getCourse = prisma.course.findOne({
         where: { id: courseId }
@@ -71,17 +104,17 @@ export default {
         console.error('student DNE!');
         return null;
       }
-
+  
       const courseData = JSON.stringify(course);
-      const key = crypto.publicKey.decompress(student.pub);
-      const encrypted = crypto.encryptWithPublicKey(key, courseData);
+      const key = student.pub.replace('0x', '');
+      const encrypted = await crypto.encryptWithPublicKey(key, courseData);
 
-      const uri = await ipfs.upload(encrypted);
-      const nftId = await ethereum.issueCert(student.address, course.info, uri);
+      const uri = await ipfs.upload(JSON.stringify(encrypted));
+      await ethereum.issueCert(student.address, course.info, uri);
       
       const cert = await prisma.cert.create({
         data: {
-          nftId,
+          info: uri,
           course: {
             connect: {
               id: course.id
