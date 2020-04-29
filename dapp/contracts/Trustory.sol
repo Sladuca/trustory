@@ -10,38 +10,48 @@ contract Trustory is ERC721 {
 
   address public owner;
 
+  // struct for storing IPFS links
   struct Multihash {
     bytes32 hash;
     uint8 hash_function;
     uint8 size;
   }
 
-  mapping (uint256 => Multihash) private privMetadatas;
+  // token id's associated private encrypted data
+  mapping (uint256 => Multihash) private privateInfo;
 
+  // re-encrypted private cert data
   mapping (bytes32 => Multihash) private approvals;
 
   mapping (address => bool) public institutions;
 
-  event RequestViewCert(address indexed requestor, address indexed holder, uint256 id, bytes pub);
-  // URI is the hash of the private cert file that the user re-encrypted with requestor's public key
-  event ApproveViewCert(address indexed requestor, address indexed holder, uint256 id, bytes32 approvalHash);
+  event RequestViewCert(
+    address indexed requestor,
+    address indexed holder,
+    uint256 id, bytes pub);
+
+  event ApproveViewCert(
+    address indexed requestor,
+    address indexed holder,
+    uint256 id,
+    bytes32 approvalHash);
 
   constructor () ERC721 ("Certificate", "CRT") public {
     owner = msg.sender;
   }
 
   modifier onlyOwner() {
-    require(owner == address(msg.sender), "only trustory contract owner is allowed to perform this action");
+    require(owner == address(msg.sender), "must be owner!");
     _;
   }
 
   modifier onlyCertHolder(uint256 id) {
-    require(ownerOf(id) == address(msg.sender), "only token owner is allowed to perform this action");
+    require(ownerOf(id) == address(msg.sender), "must be cert holder!");
     _;
   }
 
   modifier onlyInstitution() {
-    require(institutions[address(msg.sender)], "only verified institution is allowed to perform this action");
+    require(institutions[address(msg.sender)], "must be institution!");
     _;
   }
 
@@ -67,9 +77,9 @@ contract Trustory is ERC721 {
   }
 
   function requestViewCert (address holder, bytes memory pub, uint256 id) public {
-    // in a real world, would check to make sure key correctly corresponds to user something like this
-    // address addrFromKey = address(bytes20(keccak256(pub))); // cast to bytes20 first since address is 20 bytes long
-    // require(addrFromKey == address(msg.sender), "public key and msg.sender must be consistent!");
+    // check to make sure key correctly corresponds to user
+    address addrFromKey = address(bytes20(keccak256(pub))); // cast to bytes20 first since address is 20 bytes long
+    require(addrFromKey == address(msg.sender), "public key and msg.sender must be consistent!");
     emit RequestViewCert(address(msg.sender), holder, id, pub);
   }
 
