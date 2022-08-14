@@ -5,7 +5,7 @@
     "deploy": "truffle deploy"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^3.0.0"
+    "@openzeppelin/contracts": "^4.7.2"
   },
   "devDependencies": {
     "truffle": "^5.1.23"
